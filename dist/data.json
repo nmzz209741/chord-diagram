@@ -2,151 +2,151 @@
     {
       "from": 1,
       "to": 1,
-      "patient": "512,123",
+      "referrals": "512,123",
       "patient__1": "0.02"
     },
     {
       "from": 1,
       "to": 2,
-      "patient": "4,724,812",
+      "referrals": "4,724,812",
       "patient__1": "0.21"
     },
     {
       "from": 1,
       "to": 3,
-      "patient": "10,962,715",
+      "referrals": "10,962,715",
       "patient__1": "0.48"
     },
     {
       "from": 1,
       "to": 4,
-      "patient": "7,372,894",
+      "referrals": "7,372,894",
       "patient__1": "0.32"
     },
     {
       "from": 1,
       "to": 5,
-      "patient": "788,549",
+      "referrals": "788,549",
       "patient__1": "0.03"
     },
     {
       "from": 2,
       "to": 1,
-      "patient": "4,674,155",
+      "referrals": "4,674,155",
       "patient__1": "0.20"
     },
     {
       "from": 2,
       "to": 2,
-      "patient": "64,111,341",
+      "referrals": "64,111,341",
       "patient__1": "2.79"
     },
     {
       "from": 2,
       "to": 3,
-      "patient": "161,022,953",
+      "referrals": "161,022,953",
       "patient__1": "7.00"
     },
     {
       "from": 2,
       "to": 4,
-      "patient": "111,861,687",
+      "referrals": "111,861,687",
       "patient__1": "4.86"
     },
     {
       "from": 2,
       "to": 5,
-      "patient": "12,217,544",
+      "referrals": "12,217,544",
       "patient__1": "0.53"
     },
     {
       "from": 3,
       "to": 1,
-      "patient": "10,904,350",
+      "referrals": "10,904,350",
       "patient__1": "0.47"
     },
     {
       "from": 3,
       "to": 2,
-      "patient": "162,186,494",
+      "referrals": "162,186,494",
       "patient__1": "7.05"
     },
     {
       "from": 3,
       "to": 3,
-      "patient": "461,101,828",
+      "referrals": "461,101,828",
       "patient__1": "20.04"
     },
     {
       "from": 3,
       "to": 4,
-      "patient": "345,865,671",
+      "referrals": "345,865,671",
       "patient__1": "15.03"
     },
     {
       "from": 3,
       "to": 5,
-      "patient": "39,889,543",
+      "referrals": "39,889,543",
       "patient__1": "1.73"
     },
     {
       "from": 4,
       "to": 1,
-      "patient": "7,291,370",
+      "referrals": "7,291,370",
       "patient__1": "0.32"
     },
     {
       "from": 4,
       "to": 2,
-      "patient": "113,081,724",
+      "referrals": "113,081,724",
       "patient__1": "4.92"
     },
     {
       "from": 4,
       "to": 3,
-      "patient": "347,840,179",
+      "referrals": "347,840,179",
       "patient__1": "15.12"
     },
     {
       "from": 4,
       "to": 4,
-      "patient": "298,378,276",
+      "referrals": "298,378,276",
       "patient__1": "12.97"
     },
     {
       "from": 4,
       "to": 5,
-      "patient": "38,718,475",
+      "referrals": "38,718,475",
       "patient__1": "1.68"
     },
     {
       "from": 5,
       "to": 1,
-      "patient": "755,004",
+      "referrals": "755,004",
       "patient__1": "0.03"
     },
     {
       "from": 5,
       "to": 2,
-      "patient": "12,126,692",
+      "referrals": "12,126,692",
       "patient__1": "0.53"
     },
     {
       "from": 5,
       "to": 3,
-      "patient": "39,603,590",
+      "referrals": "39,603,590",
       "patient__1": "1.72"
     },
     {
       "from": 5,
       "to": 4,
-      "patient": "38,398,642",
+      "referrals": "38,398,642",
       "patient__1": "1.67"
     },
     {
       "from": 5,
       "to": 5,
-      "patient": "6,283,063",
+      "referrals": "6,283,063",
       "patient__1": "0.27"
     }
   ]
