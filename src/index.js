@@ -6,9 +6,11 @@
  * Destname
  * Valuename
  * data
+ * ticksize
+ * interactive
+ * customColor
  * 
- * 
- * Todo
+ * Steps
  * 1. Set container
  * Set margin
  * Set Width, Height
@@ -39,7 +41,6 @@
  * 5 fill ribbon
  * gradient:??
  * 
- * 
  * 6. add labels
  * 
  * 7. add tooltips
@@ -59,6 +60,7 @@ import _ from 'lodash'
 const src = 'from'
 const dest = 'to'
 const value = 'referrals'
+const ticksize = 100000000
 
 const getArcList = function (data) {
     const arcs = _.uniq(_.map(data, src))
@@ -81,7 +83,7 @@ const dataToMatrix = function (data) {
 
 const chordReader = function (matrix, nodes) {
     return function (d) {
-        let source_index, target_index, group_index, map = {}
+        let source_index, target_index, map = {}
         if (d.source) {
             source_index = d.source.index
             target_index = d.target.index
@@ -195,10 +197,10 @@ d3.json('./data.json').then(function (data) {
 
         const sourcePercentage = percentageFormat(srcValue / totalChordValue)
         const targetPercentage = percentageFormat(targetValue / totalChordValue)
-
-        const srcStatement = `(${sourcePercentage}) i.e., ${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`
-        const targetStatement = `(${targetPercentage}) i.e., ${valueFormat(targetValue)} ${value} from ${targetName} went to ${sourceName}`
         const isEqual = sourceName === targetName
+
+        const srcStatement = isEqual? `${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`:`(${sourcePercentage}) i.e., ${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`
+        const targetStatement = `(${targetPercentage}) i.e., ${valueFormat(targetValue)} ${value} from ${targetName} went to ${sourceName}`
 
         return `<div class='chord-info' style="color: white; font-size: 12px;"><span>Chord Info:<br/> ${srcStatement}<br/>${isEqual ? '' : targetStatement}</span></div>`
     }
@@ -226,6 +228,7 @@ d3.json('./data.json').then(function (data) {
             .duration(200)
             .style("opacity", 0)
     }
+
     const mouseleaveGroup = d => {
         d3.selectAll('path.chord')
             .transition()
@@ -256,6 +259,16 @@ d3.json('./data.json').then(function (data) {
             .duration(200)
             .style("opacity", 0.2);
     }
+
+    // Group tick function
+
+    const groupTicks = function (d, step) {
+        const unit = (d.endAngle - d.startAngle) / d.value
+        return d3.range(0, d.value, step).map(value => {
+            return { value, angle: value * unit + d.startAngle }
+        })
+    }
+
     //  Draw the arcs
     const group = svg.datum(chord)
         .append('g')
@@ -273,10 +286,38 @@ d3.json('./data.json').then(function (data) {
         .on('mousemove', mousemove)
         .on('mouseleave', mouseleave)
 
+    // Add group ticks
+    group.selectAll('.group-tick')
+        .data(d => groupTicks(d, ticksize))
+        .enter()
+        .append('g')
+        .attr('transform', d => {
+            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ") translate(" + (outerRadius + 10) + ",0)"
+        })
+        .append('line')
+        .attr("x2", 6)
+        .attr("stroke", "black")
+
+    group.selectAll('.group-tick-label')
+        .data(d => groupTicks(d, ticksize))
+        .enter()
+        .filter(d => d.value % ticksize === 0)
+        .append('g')
+        .attr('transform', d => {
+            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ") translate(" + (outerRadius + 15) + ",0)"
+        })
+        .append('text')
+        .attr('x', 8)
+        .attr('dy', '0.3em')
+        .attr("transform",  d => { return d.angle > Math.PI ? "rotate(180) translate(-16)" : null; })
+        .style("text-anchor", d => { return d.angle > Math.PI ? "end" : null; })
+        .text( d => { return `${d.value/1000000}M` })
+        .style("font-size", 9)
+
     // Add labels
     group.append('text')
         .each(d => d.angle = (d.startAngle + d.endAngle) / 2)
-        .attr('dy', '0.3em')
+        .attr('dy', '1em')
         .attr('class', 'labels')
         .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
         .attr("transform", function (d) {
@@ -285,7 +326,9 @@ d3.json('./data.json').then(function (data) {
                 + (d.angle > Math.PI ? "rotate(180)" : "");
         })
         .text(function (d, i) { return nodes[i]; })
-        .style("font-size", "15px")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .style("color", "black")
         .on('mouseover', d => mouseoverGroup(d))
         .on('mouseleave', mouseleaveGroup)
 
