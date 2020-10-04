@@ -46,6 +46,8 @@
  * 
  * 8. hover over 
  * 
+ * 9.tick values
+ * 
  * 
  */
 
@@ -204,9 +206,9 @@ d3.json('./data.json').then(function (data) {
     const arcInfo = d => {
         const arcValue = d.group_value
         const mapTotal = d.map_total
-    
+
         const percentageFormat = d3.format('.2%')
-        const arcPercentage = percentageFormat(arcValue/mapTotal)
+        const arcPercentage = percentageFormat(arcValue / mapTotal)
 
         return `<div class='arc-info' style="color: white; font-size: 12px;"><span>Arc Info:<br/>${(arcValue).toLocaleString()} ${value}<br/>(${arcPercentage}) of total ${value} i.e., ${(mapTotal).toLocaleString()}</span></div>`
 
@@ -224,6 +226,12 @@ d3.json('./data.json').then(function (data) {
             .duration(200)
             .style("opacity", 0)
     }
+    const mouseleaveGroup = d => {
+        d3.selectAll('path.chord')
+            .transition()
+            .duration(200)
+            .style("opacity", defaultOpacity)
+    }
 
     const mouseoverChord = function (d) {
         tooltip.transition().duration(200).style('opacity', 1)
@@ -237,6 +245,16 @@ d3.json('./data.json').then(function (data) {
         tooltip.html(arcInfo(reader(d)))
             .style('left', `${d3.event.pageX}px`)
             .style('top', `${d3.event.pageY}px`)
+    }
+
+    const mouseoverGroup = function (name) {
+        svg.selectAll("path.chord")
+            .filter(function (d) {
+                return d.source.index != name.index && d.target.index != name.index;
+            })
+            .transition()
+            .duration(200)
+            .style("opacity", 0.2);
     }
     //  Draw the arcs
     const group = svg.datum(chord)
@@ -263,11 +281,13 @@ d3.json('./data.json').then(function (data) {
         .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
         .attr("transform", function (d) {
             return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-                + "translate(" + (outerRadius + 10) + ")"
+                + "translate(" + (outerRadius + 40) + ")"
                 + (d.angle > Math.PI ? "rotate(180)" : "");
         })
         .text(function (d, i) { return nodes[i]; })
         .style("font-size", "15px")
+        .on('mouseover', d => mouseoverGroup(d))
+        .on('mouseleave', mouseleaveGroup)
 
     // Draw the ribbons
     svg.datum(chord)
