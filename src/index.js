@@ -77,6 +77,40 @@ const dataToMatrix = function (data) {
     return matrix
 }
 
+const chordReader = function (matrix, nodes) {
+    return function (d) {
+        let source_index, target_index, group_index, map = {}
+        if (d.source) {
+            source_index = d.source.index
+            target_index = d.target.index
+
+            map.source_title = nodes[source_index]
+            map.target_title = nodes[target_index]
+
+            map.source_data = d.source.value
+            map.source_value = +(map.source_data)
+            map.source_total = _.reduce(matrix[source_index], (total, n) => { return total + n }, 0)
+
+            map.target_data = d.target.value
+            map.target_value = +(map.target_data)
+            map.target_total = _.reduce(matrix[target_index], (total, n) => { return total + n }, 0)
+
+        } else {
+            map.group_name = nodes[d.index]
+            map.group_value = d.value
+        }
+
+        map.map_total = _.reduce(matrix, (rowTotal, row) => {
+            return rowTotal + _.reduce(row, (columnTotal, column) => {
+                return columnTotal + column
+            }, 0)
+        }, 0)
+
+        return map
+
+    }
+}
+
 // Set the viewport container
 const margin = {
     top: 10,
@@ -121,6 +155,7 @@ d3.json('./data.json').then(function (data) {
         .sortGroups(d3.descending)
 
     const chord = chordGenerator(matrix)
+    const reader = chordReader(matrix, nodes)
     console.info(chord)
 
     const arcs = d3.arc()
@@ -151,18 +186,18 @@ d3.json('./data.json').then(function (data) {
     // Add labels
 
     group.append('text')
-        .each(d=> d.angle = (d.startAngle +d.endAngle)/2)
+        .each(d => d.angle = (d.startAngle + d.endAngle) / 2)
         .attr('dy', '0.3em')
         .attr('class', 'labels')
-        .attr('text-anchor', d => d.angle > Math.PI? 'end': null)
-        .attr("transform", function(d) {
+        .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+        .attr("transform", function (d) {
             return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-            + "translate(" + (outerRadius + 10) + ")"
-            + (d.angle > Math.PI ? "rotate(180)" : "");
-          })
-          .text(function(d,i){ return nodes[i]; })
-          .style("font-size", "15px")
-          
+                + "translate(" + (outerRadius + 10) + ")"
+                + (d.angle > Math.PI ? "rotate(180)" : "");
+        })
+        .text(function (d, i) { return nodes[i]; })
+        .style("font-size", "15px")
+
     // Draw the ribbons
 
     svg.datum(chord)
@@ -176,6 +211,43 @@ d3.json('./data.json').then(function (data) {
         .attr('class', d => {
             return `chord chord-${d.source.index} chord-${d.target.index}`
         })
+
+    // Tooltip
+    const chordInfo = d => {
+        const srcValue = d.source_value
+        const targetValue = d.target_value
+        const totalChordValue = srcValue + targetValue
+        const sourceName = d.source_title
+        const targetName = d.target_title
+        const percentageFormat = d3.format('.2%')
+        const valueFormat = number => number.toLocaleString()
+
+        const sourcePercentage = percentageFormat(srcValue / totalChordValue)
+        const targetPercentage = percentageFormat(targetValue / totalChordValue)
+
+        const srcStatement = `(${sourcePercentage}) i.e., ${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`
+        const targetStatement = `(${targetPercentage}) i.e., ${valueFormat(targetValue)} ${value} from ${targetName} went to ${sourceName}`
+        const isEqual = sourceName === targetName
+
+        return `Chord Info:<br/> ${srcStatement}<br/>${isEqual ? '' : targetStatement}`
+    }
+    console.info(chordInfo(reader({
+        "source": {
+            "index": 3,
+            "subindex": 2,
+            "startAngle": 2.6638349736704465,
+            "endAngle": 3.538198093991663,
+            "value": 347840179
+        },
+        "target": {
+            "index": 2,
+            "subindex": 3,
+            "startAngle": 1.1590680360013754,
+            "endAngle": 2.0284678511031013,
+            "value": 345865671
+        }
+    })))
+
     
 })
 
