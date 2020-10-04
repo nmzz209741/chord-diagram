@@ -171,7 +171,7 @@ d3.json('./data.json').then(function (data) {
 
 
     const color = d3.scaleOrdinal()
-        .domain([0, nodes.length - 1])
+        .domain(d3.range(5))
         .range(defaultColorScheme)
 
     // Tooltip
