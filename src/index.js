@@ -141,7 +141,7 @@ svg = svg.append('g')
 const outerRadius = (Math.min(height, width)) * .5 - 50
 const innerRadius = outerRadius - 30
 
-const defaultColorScheme = ["red", "orange", "yellow", "blue", "green"]
+const defaultColorScheme = ["#E15759", "#F28E2C", "#EDC949", "#B3DE69", "#59A14F"]
 const defaultOpacity = 1
 
 // Get the matrix and nodes
