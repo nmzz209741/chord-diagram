@@ -174,6 +174,34 @@ d3.json('./data.json').then(function (data) {
         .domain(d3.range(5))
         .range(defaultColorScheme)
 
+
+    // creating the fill gradient
+    function getGradID(d) { return "linkGrad-" + d.source.index + "-" + d.target.index; }
+
+
+    var grads = svg.append("defs")
+        .selectAll("linearGradient")
+        .data(chord)
+        .enter()
+        .append("linearGradient")
+        .attr("id", getGradID)
+        .attr("gradientUnits", "userSpaceOnUse")
+        .attr("x1", function (d, i) { return innerRadius * Math.cos((d.source.endAngle - d.source.startAngle) / 2 + d.source.startAngle - Math.PI / 2); })
+        .attr("y1", function (d, i) { return innerRadius * Math.sin((d.source.endAngle - d.source.startAngle) / 2 + d.source.startAngle - Math.PI / 2); })
+        .attr("x2", function (d, i) { return innerRadius * Math.cos((d.target.endAngle - d.target.startAngle) / 2 + d.target.startAngle - Math.PI / 2); })
+        .attr("y2", function (d, i) { return innerRadius * Math.sin((d.target.endAngle - d.target.startAngle) / 2 + d.target.startAngle - Math.PI / 2); })
+
+    // set the starting color (at 0%)
+
+    grads.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", function (d) { return color(d.source.index) })
+
+    //set the ending color (at 100%)
+    grads.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", function (d) { return color(d.target.index) })
+
     // Tooltip
     // Defining tooltip
     const tooltip = d3.select('.svg__chord')
@@ -199,7 +227,7 @@ d3.json('./data.json').then(function (data) {
         const targetPercentage = percentageFormat(targetValue / totalChordValue)
         const isEqual = sourceName === targetName
 
-        const srcStatement = isEqual? `${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`:`(${sourcePercentage}) i.e., ${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`
+        const srcStatement = isEqual ? `${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}` : `(${sourcePercentage}) i.e., ${valueFormat(srcValue)} ${value} from ${sourceName} went to ${targetName}`
         const targetStatement = `(${targetPercentage}) i.e., ${valueFormat(targetValue)} ${value} from ${targetName} went to ${sourceName}`
 
         return `<div class='chord-info' style="color: white; font-size: 12px;"><span>Chord Info:<br/> ${srcStatement}<br/>${isEqual ? '' : targetStatement}</span></div>`
@@ -309,9 +337,9 @@ d3.json('./data.json').then(function (data) {
         .append('text')
         .attr('x', 8)
         .attr('dy', '0.3em')
-        .attr("transform",  d => { return d.angle > Math.PI ? "rotate(180) translate(-16)" : null; })
+        .attr("transform", d => { return d.angle > Math.PI ? "rotate(180) translate(-16)" : null; })
         .style("text-anchor", d => { return d.angle > Math.PI ? "end" : null; })
-        .text( d => { return `${d.value/1000000}M` })
+        .text(d => { return `${d.value / 1000000}M` })
         .style("font-size", 9)
 
     // Add labels
